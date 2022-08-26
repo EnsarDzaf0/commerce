@@ -8,9 +8,11 @@
 
 <hr>
 
-<form action="{% url 'wishlist' %}" method="POST">
-    {% csrf_token %}
-    <input type="hidden" value="{{ info.id }}" name="item_id">
-    <input type="submit" value="Add to wishlist">
-</form>
+{% if request.user.is_authenticated %}
+    <form action="{% url 'wishlist' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" value="{{ info.id }}" name="item_id">
+        <input type="submit" value="Add to wishlist">
+    </form>
+{% endif %}
 {% endblock %}
