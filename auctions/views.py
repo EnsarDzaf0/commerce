@@ -82,8 +82,12 @@ def create_listing(request):
 
 def listing(request,listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    current_user = request.user
+    user = User.objects.get(pk=current_user.id)
+    exist_watchlist = watchlist.objects.filter(item=listing, buyer=user).count
     return render(request, "auctions/listing.html", {
-        "info": listing
+        "info": listing,
+        "message": exist_watchlist
     })
 
 def add_wishlist(request):
