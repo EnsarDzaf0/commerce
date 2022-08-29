@@ -15,13 +15,13 @@
     <form action="{% url 'wishlist' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" value="{{ info.id }}" name="item_id">
-        <input type="submit" value="Add to wishlist">
+        <input type="submit" value="Add to watchlist">
     </form>
     {% else %}
-    <form action="{% url 'wishlist' %}" method="POST">
+    <form action="{% url 'unlist' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" value="{{ info.id }}" name="item_id">
-        <input type="submit" value="Remove from wishlist">
+        <input type="submit" value="Remove from watchlist">
     </form>
     {% endif %}
 {% endif %}
