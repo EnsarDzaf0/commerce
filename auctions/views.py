@@ -82,9 +82,18 @@ def create_listing(request):
 
 def listing(request,listing_id):
     listing = Listing.objects.get(pk=listing_id)
-    return render(request, "auctions/listing.html", {
-        "info": listing
-    })
+    if request.user.is_authenticated:
+        current_user = request.user
+        user = User.objects.get(pk=current_user.id)
+        exist_watchlist = watchlist.objects.filter(item=listing, buyer=user).count
+        return render(request, "auctions/listing.html", {
+            "info": listing,
+            "message": exist_watchlist
+        })
+    else: 
+        return render(request, "auctions/listing.html", {
+            "info": listing
+        })
 
 def add_wishlist(request):
     item_id = request.POST['item_id']
@@ -95,5 +104,26 @@ def add_wishlist(request):
 
     Watchlist = watchlist.objects.create(item=listing, buyer=user)
     return render(request, "auctions/listing.html", {
-        "info": listing
+        "info": listing,
+        "message": 1
+    })
+
+def remove_wishlist(request):
+    item_id = request.POST['item_id']
+    listing = Listing.objects.get(pk=item_id)
+
+    current_user = request.user
+    user = User.objects.get(pk=current_user.id)
+    Watchlist = watchlist.objects.filter(item=listing, buyer=user).delete()
+    return render(request, "auctions/listing.html", {
+        "info": listing,
+        "message":0
+    })
+
+def watchlist_view(request):
+    current_user = request.user
+    user = User.objects.get(pk=current_user.id)
+    all_watchlist = watchlist.objects.filter(buyer=user)
+    return render(request, "auctions/watchlist.html", {
+        "items": all_watchlist
     })
