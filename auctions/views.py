@@ -77,7 +77,7 @@ def create_listing(request):
         current_user = request.user
         user = User.objects.get(pk=current_user.id)
 
-        listing = Listing.objects.create(title=title, description=description, starting_bid=starting_bid, image=image, category=category, user=user)
+        listing = Listing.objects.create(title=title, description=description, starting_bid=starting_bid, current_price=starting_bid, image=image, category=category, user=user)
         return HttpResponseRedirect(reverse('index'))
 
 def listing(request,listing_id):
