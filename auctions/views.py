@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User,Listing,watchlist
+from .models import User,Listing,watchlist,bids
 
 
 def index(request):
@@ -127,3 +127,30 @@ def watchlist_view(request):
     return render(request, "auctions/watchlist.html", {
         "items": all_watchlist
     })
+
+def add_bid(request):
+    current_price = request.POST['current_price']
+    bid = request.POST['bid']
+
+    item_id = request.POST['item_id']
+    Listing.objects.filter(pk=item_id).update(current_price=bid)
+    listing = Listing.objects.get(pk=item_id)
+
+    current_user = request.user
+    user = User.objects.get(pk=current_user.id)
+
+    exist_watchlist = watchlist.objects.filter(item=listing, buyer=user).count
+
+    if bid > current_price:
+        create_bid = bids.objects.create(bid_item=listing, bid_buyer=user, bid_amount=bid)
+
+        return render(request, "auctions/listing.html", {
+            "info": listing,
+            "message":exist_watchlist
+        })
+    else:
+        return render(request, "auctions/listing.html", {
+            "info": listing,
+            "message": exist_watchlist,
+            "error": "Bid cant be lower or equal to current price!"
+        })

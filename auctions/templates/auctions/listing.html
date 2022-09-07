@@ -1,6 +1,8 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+<h1 style="color: red;">{{ error }}</h1>
+<hr>
 <h1>Title: {{ info.title }}</h1>
 <h3>Description: {{ info.description }}</h3>
 <img src="{{info.image.url}}" width="200"/>
@@ -25,8 +27,15 @@
         <input type="submit" value="Remove from watchlist">
     </form>
     {% endif %}
+    <br>
     {% if  info.user != request.user %}
-    <h1>Test Button</h1>
+    <form action="{% url 'add_bid' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" value="{{ info.id }}" name="item_id">
+        <input type="hidden" value="{{ info.current_price }}" name="current_price">
+        <input type="number" name="bid" value="{{ info.current_price }}">
+        <input type="submit" value="Bid on item">
+    </form>
     {% endif %}
 {% endif %}
 {% endblock %}
