@@ -9,7 +9,12 @@ from .models import User,Listing,watchlist,bids
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.filter(active=True)
+    })
+
+def closed_view(request):
+    return render(request, "auctions/closed.html", {
+        "listings": Listing.objects.filter(active=False)
     })
 
 

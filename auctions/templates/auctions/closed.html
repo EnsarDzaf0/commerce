@@ -1,13 +1,13 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>Closed Listings</h2>
 
     {% for listing in listings %}
     <a href="{% url 'listing' listing.id %}">
     <div>Title: {{listing.title}}</div>
     <div>Image:<img src="{{listing.image.url}}" width="120"/></div>
-    <div>Current Price: {{listing.current_price}}</div>
+    <div>Final Price: {{listing.current_price}}</div>
     <div>Category: {{listing.category}}</div>
     </a>
     <hr>

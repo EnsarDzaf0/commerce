@@ -19,6 +19,7 @@ class Listing(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_listings', default=None)
     current_price = models.DecimalField(max_digits=6 ,decimal_places=2, default=0.00)
+    active = models.BooleanField(default=True)
 
 class watchlist(models.Model):
     item = models.ForeignKey(Listing, on_delete=models.CASCADE,related_name="itemwatchlist")
