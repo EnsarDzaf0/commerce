@@ -38,4 +38,12 @@
     </form>
     {% endif %}
 {% endif %}
+
+<hr>
+<h2>Bids on this item:</h2>
+{% for bid in bids %}
+<div>Bidder: {{ bid.bid_buyer }} </div>
+<div>Amount: {{ bid.bid_amount }}$</div>
+<hr>
+{% endfor %}
 {% endblock %}

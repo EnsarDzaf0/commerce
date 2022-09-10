@@ -87,42 +87,49 @@ def create_listing(request):
 
 def listing(request,listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    all_bids = bids.objects.filter(bid_item=listing)
+
     if request.user.is_authenticated:
         current_user = request.user
         user = User.objects.get(pk=current_user.id)
         exist_watchlist = watchlist.objects.filter(item=listing, buyer=user).count
         return render(request, "auctions/listing.html", {
             "info": listing,
-            "message": exist_watchlist
+            "message": exist_watchlist,
+            "bids": all_bids
         })
     else: 
         return render(request, "auctions/listing.html", {
-            "info": listing
+            "info": listing,
+            "bids": all_bids
         })
 
 def add_wishlist(request):
     item_id = request.POST['item_id']
     listing = Listing.objects.get(pk=item_id)
+    all_bids = bids.objects.filter(bid_item=listing)
 
     current_user = request.user
     user = User.objects.get(pk=current_user.id)
 
     Watchlist = watchlist.objects.create(item=listing, buyer=user)
     return render(request, "auctions/listing.html", {
-        "info": listing,
-        "message": 1
+       "info": listing,
+       "message": 1,
+       "bids": all_bids
     })
 
 def remove_wishlist(request):
     item_id = request.POST['item_id']
     listing = Listing.objects.get(pk=item_id)
-
+    all_bids = bids.objects.filter(bid_item=listing)
     current_user = request.user
     user = User.objects.get(pk=current_user.id)
     Watchlist = watchlist.objects.filter(item=listing, buyer=user).delete()
     return render(request, "auctions/listing.html", {
         "info": listing,
-        "message":0
+        "message":0,
+        "bids": all_bids
     })
 
 def watchlist_view(request):
@@ -145,17 +152,19 @@ def add_bid(request):
     user = User.objects.get(pk=current_user.id)
 
     exist_watchlist = watchlist.objects.filter(item=listing, buyer=user).count
-
+    all_bids = bids.objects.filter(bid_item=listing)
     if bid > current_price:
         create_bid = bids.objects.create(bid_item=listing, bid_buyer=user, bid_amount=bid)
 
         return render(request, "auctions/listing.html", {
             "info": listing,
-            "message":exist_watchlist
+            "message":exist_watchlist,
+            "bids": all_bids
         })
     else:
         return render(request, "auctions/listing.html", {
             "info": listing,
             "message": exist_watchlist,
-            "error": "Bid cant be lower or equal to current price!"
+            "error": "Bid cant be lower or equal to current price!",
+            "bids": all_bids
         })
