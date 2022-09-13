@@ -7,6 +7,7 @@
     <a href="{% url 'listing' listing.id %}">
     <div>Title: {{listing.title}}</div>
     <div>Image:<img src="{{listing.image.url}}" width="120"/></div>
+    <div>Winner: {{listing.winner}}</div>
     <div>Final Price: {{listing.current_price}}</div>
     <div>Category: {{listing.category}}</div>
     </a>

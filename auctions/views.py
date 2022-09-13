@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.db.models import Max
 
 from .models import User,Listing,watchlist,bids
 
@@ -168,3 +169,21 @@ def add_bid(request):
             "error": "Bid cant be lower or equal to current price!",
             "bids": all_bids
         })
+
+def close_auction(request):
+    item_id = request.POST['item_id']
+    listing = Listing.objects.get(pk=item_id)
+    highest_bid = bids.objects.filter(bid_item=listing).order_by('bid_amount')[:1].get()
+    auction_winner = User.objects.get(username=highest_bid.bid_buyer)
+    Listing.objects.filter(pk=item_id).update(active=False, winner=auction_winner)
+
+    listing = Listing.objects.get(pk=item_id)
+
+    current_user = request.user
+    user = User.objects.get(pk=current_user.id)
+
+    exist_watchlist = watchlist.objects.filter(item=listing, buyer=user).count
+    return render(request, "auctions/closed.html", {
+        "info": listing,
+        "message":exist_watchlist
+    })
